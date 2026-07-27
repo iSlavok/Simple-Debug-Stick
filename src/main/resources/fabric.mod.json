@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-debug-stick",
+  "version": "${version}",
+
+  "name": "Simple Debug Stick",
+  "description": "Craft the debug stick in survival and let it edit only the block states you allow.",
+  "authors": [
+    "iSlavok"
+  ],
+  "contact": {
+    "sources": "https://github.com/iSlavok/Simple-Debug-Stick",
+    "issues": "https://github.com/iSlavok/Simple-Debug-Stick/issues"
+  },
+
+  "license": "MIT",
+  "icon": "assets/simple-debug-stick/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "online.slavok.stick.SimpleDebugStick"
+      }
+    ],
+    "fabric-datagen": [
+      {
+        "adapter": "kotlin",
+        "value": "online.slavok.stick.datagen.DebugStickDataGenerator"
+      }
+    ]
+  },
+  "mixins": [
+    "simple-debug-stick.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "${minecraft_dep}",
+    "java": ">=${java_level}",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  }
+}

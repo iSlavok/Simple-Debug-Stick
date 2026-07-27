@@ -1,0 +1,54 @@
+# Publishes a GitHub Release when a `v*` tag is pushed. The tag sets the version,
+# so `v1.0.1` produces simple-debug-stick-1.0.1+mc<version>.jar.
+name: release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # workflow_dispatch has no tag, so fall back to the gradle.properties default.
+      - name: Resolve version from tag
+        id: ver
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            echo "arg=-Pmod_version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "arg=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build
+        run: ./gradlew build ${{ steps.ver.outputs.arg }} --stacktrace
+
+      # softprops/action-gh-release has no exclude patterns, so stage the loadable
+      # jar only (drop *-sources.jar) and upload from there.
+      - name: Collect release jar
+        run: |
+          mkdir -p release-jars
+          find build/libs -name '*.jar' ! -name '*-sources.jar' -exec cp {} release-jars/ \;
+          ls -la release-jars
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-jars/*.jar
+          fail_on_unmatched_files: true
+          generate_release_notes: true

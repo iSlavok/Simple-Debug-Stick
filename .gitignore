@@ -1,0 +1,47 @@
+# gradle
+
+.gradle/
+build/
+out/
+classes/
+
+# eclipse
+
+*.launch
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# macos
+
+*.DS_Store
+
+# fabric
+
+run/
+
+# kotlin
+
+.kotlin/
+
+# datagen — the generated data itself IS committed (it ships in the jar);
+# only the provider's hash cache is noise.
+
+src/main/generated/.cache/
+
+# `runDatagen` / `runGameTest` write these into the project root
+
+/config/
+/logs/

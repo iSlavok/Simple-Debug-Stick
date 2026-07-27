@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "online.slavok.stick.mixin",
+  "compatibilityLevel": "JAVA_${java_level}",
+  "mixins": [
+    "DebugStickMixin",
+    "ReloadCommandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
