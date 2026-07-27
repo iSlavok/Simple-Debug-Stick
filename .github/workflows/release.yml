@@ -34,12 +34,16 @@ jobs:
           fi
 
       - run: ./gradlew assemble ${{ steps.ver.outputs.arg }} --stacktrace   # jars only, no gametest boot
+      # The server plugin is a standalone build, not part of the mod version grid.
+      - name: Build plugin
+        run: ./gradlew -p plugin assemble ${{ steps.ver.outputs.arg }} --stacktrace
 
       # softprops has no exclude patterns -> stage only the loadable jars.
       - name: Collect release jars
         run: |
           mkdir -p release-jars
           find versions -path '*/build/libs/*.jar' ! -name '*-sources.jar' -exec cp {} release-jars/ \;
+          find plugin/build/libs -name '*.jar' ! -name '*-sources.jar' -exec cp {} release-jars/ \;
           ls -la release-jars
       - uses: softprops/action-gh-release@v2
         with:
