@@ -2,15 +2,17 @@
 
 **Give the debug stick to survival players — but only over the blocks you allow.**
 
-A server-side Fabric mod for Minecraft **1.21.5 – 1.21.8**. The debug stick becomes
-craftable at a smithing table, and a config file decides exactly which blocks,
-properties and values a non-operator may edit with it. Operators and creative players
-keep the unrestricted vanilla item.
+A server-side Fabric mod for Minecraft **1.18 – 26.2** (built from one source with
+[Stonecutter](https://stonecutter.kikugie.dev/); the Fabric jar also runs on Quilt). The
+debug stick becomes craftable at a smithing table, and a config file decides exactly which
+blocks, properties and values a non-operator may edit with it. Operators and creative
+players keep the unrestricted vanilla item.
 
 ## Features
 
 - 🔨 **Craftable.** Upgrade a plain stick to a debug stick at a **smithing table**:
-  netherite upgrade template + stick + netherite ingot. Late-game by design, not a day-one tool.
+  netherite upgrade template + stick + netherite ingot (a plain stick + netherite ingot on
+  1.18–1.19, which predate smithing templates). Late-game by design, not a day-one tool.
 - 🎛️ **Allow-list by default.** Out of the box only stairs, slabs, walls, fences, glass
   panes, iron bars and bamboo can be edited — and never `waterlogged`.
 - 🧱 **Rules at three levels.** Per block, per block tag, or per property globally. Deny
@@ -79,28 +81,48 @@ Full walkthrough with examples: **[the wiki](https://github.com/iSlavok/Simple-D
 
 ## Requirements
 
-- Minecraft **1.21.5 – 1.21.8**
-- [Fabric Loader](https://fabricmc.net/) 0.16+
+- Minecraft **1.18 – 26.2**
+- [Fabric Loader](https://fabricmc.net/) 0.14+ (the jar also runs on Quilt)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin)
 
 ## Installation
 
-1. Grab the latest jar from [Releases](https://github.com/iSlavok/Simple-Debug-Stick/releases).
+1. Grab the jar for your Minecraft version from
+   [Releases](https://github.com/iSlavok/Simple-Debug-Stick/releases).
 2. Drop it into the server's `mods` folder alongside Fabric API and Fabric Language Kotlin.
 3. Start the server once — `config/SimpleDebugStick.json` is created with the defaults.
+
+## Supported versions
+
+Built from one source with [Stonecutter](https://stonecutter.kikugie.dev/): one jar per
+build anchor, each covering a patch band with no gaps. Minecraft 26+ is unobfuscated and
+needs JDK 25 to build (the project still builds on JDK 17–24, just without the 26.x nodes).
+
+| Build anchor | Covers | Java |
+| --- | --- | --- |
+| 1.18.2 | 1.18 – 1.18.2 | 17 |
+| 1.19.4 | 1.19 – 1.19.4 | 17 |
+| 1.20.4 | 1.20 – 1.20.4 | 17 |
+| 1.20.6 | 1.20.5 – 1.20.6 | 21 |
+| 1.21.1 | 1.21 – 1.21.1 | 21 |
+| 1.21.8 | 1.21.2 – 1.21.8 | 21 |
+| 1.21.10 | 1.21.9 – 1.21.11 | 21 |
+| 26.1.2 | 26.1.x | 25 |
+| 26.2 | 26.2 | 25 |
 
 ## Building
 
 ```bash
-./gradlew build          # jar in build/libs/
-./gradlew test           # rule-engine unit tests
-./gradlew runGameTest    # headless server: boots the mod and checks the recipe
-./gradlew runDatagen     # regenerates src/main/generated (committed)
+./gradlew build                 # every version node -> versions/<ver>/build/libs/
+./gradlew :1.21.8:build         # a single node
+./gradlew :1.21.8:runGameTest   # boot a headless server for one node and check the recipe
 ```
 
-Needs a JDK 21 or newer. The recipe JSON under `src/main/generated` is committed on
-purpose, so a plain `build` ships it without running datagen first.
+Needs a JDK 21+ to build the yarn anchors; JDK 25 to also include the unobfuscated 26.x
+nodes (the Gradle daemon is pinned to 25 via `gradle/gradle-daemon-jvm.properties`). The
+per-version recipe JSON under `src/main/recipes/<era>` is committed, so a plain `build`
+ships the recipe without a datagen step.
 
 ## License
 

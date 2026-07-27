@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": "minecraft:netherite_ingot",
+  "template": "minecraft:netherite_upgrade_smithing_template",
   "base": "minecraft:stick",
+  "addition": "minecraft:netherite_ingot",
   "result": {
     "id": "minecraft:debug_stick"
-  },
-  "template": "minecraft:netherite_upgrade_smithing_template"
+  }
 }

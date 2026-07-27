@@ -36,12 +36,12 @@ run/
 
 .kotlin/
 
-# datagen — the generated data itself IS committed (it ships in the jar);
-# only the provider's hash cache is noise.
+# stonecutter — per-node build output and the plugin's caches
+versions/*/build/
+.stonecutter/
+build/
 
-src/main/generated/.cache/
-
-# `runDatagen` / `runGameTest` write these into the project root
+# `runGameTest` writes these into the active node's run dir / project root
 
 /config/
 /logs/

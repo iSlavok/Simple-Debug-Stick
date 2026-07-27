@@ -23,12 +23,6 @@
         "adapter": "kotlin",
         "value": "online.slavok.stick.SimpleDebugStick"
       }
-    ],
-    "fabric-datagen": [
-      {
-        "adapter": "kotlin",
-        "value": "online.slavok.stick.datagen.DebugStickDataGenerator"
-      }
     ]
   },
   "mixins": [
@@ -36,7 +30,7 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.16.0",
+    "fabricloader": ">=0.14.0",
     "minecraft": "${minecraft_dep}",
     "java": ">=${java_level}",
     "fabric-api": "*",
