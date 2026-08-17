@@ -22,13 +22,14 @@ jobs:
           distribution: temurin
       - uses: gradle/actions/setup-gradle@v4
 
-      # Version comes from the tag (v1.0.2 -> 1.0.2), overriding mod_version.
-      # workflow_dispatch has no tag, so fall back to the gradle.properties default.
+      # Version comes from the tag (v1.0.2 -> 1.0.2), overriding both the mod's and the
+      # plugin's version. workflow_dispatch has no tag, so fall back to the defaults.
       - name: Resolve version from tag
         id: ver
         run: |
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
-            echo "arg=-Pmod_version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+            V="${GITHUB_REF_NAME#v}"
+            echo "arg=-Pmod_version=$V -Pplugin_version=$V" >> "$GITHUB_OUTPUT"
           else
             echo "arg=" >> "$GITHUB_OUTPUT"
           fi
@@ -51,8 +52,17 @@ jobs:
           fail_on_unmatched_files: true
           generate_release_notes: true
 
-      - name: Publish to Modrinth
+      # Both go to the same Modrinth project (mod jars under fabric/quilt, plugin jar under
+      # bukkit/spigot/paper/purpur/folia). Gated behind a repo variable so a tag without the
+      # token/project set up still produces a GitHub release without failing.
+      - name: Publish mod to Modrinth
         if: ${{ vars.MODRINTH_ENABLED == 'true' }}
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         run: ./gradlew publishMods ${{ steps.ver.outputs.arg }} --stacktrace
+
+      - name: Publish plugin to Modrinth
+        if: ${{ vars.MODRINTH_ENABLED == 'true' }}
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: ./gradlew -p plugin publishMods ${{ steps.ver.outputs.arg }} --stacktrace
