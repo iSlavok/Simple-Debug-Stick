@@ -3,8 +3,13 @@ package online.slavok.stick
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
+//? if >=1.22 {
+/*import net.minecraft.world.item.Items
+import net.minecraft.world.InteractionResult
+*///?} else {
 import net.minecraft.item.Items
 import net.minecraft.util.ActionResult
+//?}
 import online.slavok.stick.config.Config
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,30 +41,61 @@ object SimpleDebugStick : ModInitializer {
         Config.loadOrCreate()
 
         AttackBlockCallback.EVENT.register { player, world, hand, pos, _ ->
+            //? if >=1.22 {
+            /*val pass = InteractionResult.PASS
+            *///?} else {
+            val pass = ActionResult.PASS
+            //?}
+
             // The callback runs before vanilla's spectator check, and creative players
             // already get the real debug stick, so neither needs survival handling.
-            if (world.isClient || player.isSpectator || player.isCreative) {
-                return@register ActionResult.PASS
+            //? if >=1.22 {
+            /*val onClient = world.isClientSide
+            *///?} else {
+            val onClient = world.isClient
+            //?}
+            if (onClient || player.isSpectator || player.isCreative) {
+                return@register pass
             }
 
+            //? if >=1.22 {
+            /*val stack = player.getItemInHand(hand)
+            if (!stack.`is`(Items.DEBUG_STICK)) return@register pass
+            val now = world.gameTime
+            val pid = player.getUUID()
+            *///?} else {
             val stack = player.getStackInHand(hand)
-            if (!stack.isOf(Items.DEBUG_STICK)) return@register ActionResult.PASS
-
+            if (!stack.isOf(Items.DEBUG_STICK)) return@register pass
             val now = world.time
-            val last = lastAttackTick[player.uuid]
-            if (last != null && now < last + ATTACK_COOLDOWN_TICKS) {
-                return@register ActionResult.PASS
-            }
-            lastAttackTick[player.uuid] = now
+            val pid = player.uuid
+            //?}
 
-            // DebugStickItem.canMine runs the property-cycling logic (server side only);
-            // DebugStickMixin filters what it is allowed to touch through the config.
+            val last = lastAttackTick[pid]
+            if (last != null && now < last + ATTACK_COOLDOWN_TICKS) {
+                return@register pass
+            }
+            lastAttackTick[pid] = now
+
+            // The debug stick's property-cycling logic runs server-side inside canMine /
+            // canDestroyBlock; DebugStickMixin filters what it may touch via the config.
+            // The ItemStack parameter was added in 1.21.2; the method was renamed to
+            // canDestroyBlock in 26.
+            //? if >=1.22 {
+            /*stack.item.canDestroyBlock(stack, world.getBlockState(pos), world, pos, player)
+            *///?} elif >=1.21.2 {
             stack.item.canMine(stack, world.getBlockState(pos), world, pos, player)
-            ActionResult.PASS
+            //?} else {
+            /*stack.item.canMine(world.getBlockState(pos), world, pos, player)
+            *///?}
+            pass
         }
 
         ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
+            //? if >=1.22 {
+            /*lastAttackTick.remove(handler.player.getUUID())
+            *///?} else {
             lastAttackTick.remove(handler.player.uuid)
+            //?}
         }
 
         LOGGER.info("Simple Debug Stick loaded successfully!")

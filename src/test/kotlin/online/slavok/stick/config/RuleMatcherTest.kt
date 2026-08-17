@@ -6,12 +6,30 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * Precedence rules of [RuleMatcher], exercised against the shipped defaults and a few
- * hand-built configs. Ids are passed literally, so no game bootstrap is needed.
+ * Precedence rules of [RuleMatcher], exercised against a fixed decorative allow-list
+ * fixture and a few hand-built configs. Ids are passed literally, so no game bootstrap is
+ * needed. The fixture is independent of the shipped [StickConfig.default], which may change.
  */
 class RuleMatcherTest {
 
-    private val defaults = StickConfig.default()
+    private val defaults = StickConfig(
+        allowed = StickConfig.Rules(
+            blocks = listOf(
+                StickConfig.Entry("iron_bars"),
+                StickConfig.Entry("bamboo", mapOf("leaves" to listOf("none", "large"), "age" to listOf(ALL))),
+            ),
+            properties = emptyMap(),
+            tags = listOf(
+                StickConfig.Entry("stairs"),
+                StickConfig.Entry("walls"),
+                StickConfig.Entry("c:glass_panes"),
+                StickConfig.Entry("fences"),
+                StickConfig.Entry("slabs", mapOf("type" to listOf("top", "bottom"))),
+            ),
+        ),
+        forbidden = StickConfig.Rules(emptyList(), mapOf("waterlogged" to listOf(ALL)), emptyList()),
+        whitelist = true,
+    )
 
     // Tags a vanilla oak stair / oak slab actually carries, in registration order.
     private val stairTags = { listOf("minecraft:stairs", "minecraft:wooden_stairs") }
