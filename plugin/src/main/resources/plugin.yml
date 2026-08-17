@@ -1,0 +1,23 @@
+name: SimpleDebugStick
+version: '${version}'
+main: online.slavok.stick.SimpleDebugStickPlugin
+api-version: '1.16'
+folia-supported: true
+author: iSlavok
+description: Give the debug stick to survival players, filtered to the block states you allow.
+commands:
+  simpledebugstick:
+    description: Give a debug stick or reload the config.
+    usage: /simpledebugstick <give|reload>
+    aliases: [sds, debugstick]
+    permission: simpledebugstick.command
+permissions:
+  simpledebugstick.use:
+    description: Use the config-filtered debug stick.
+    default: true
+  simpledebugstick.bypass:
+    description: Use the unrestricted vanilla debug stick (skips the config filter).
+    default: op
+  simpledebugstick.command:
+    description: Access to /simpledebugstick.
+    default: op

@@ -32,3 +32,8 @@ stonecutter {
 }
 
 rootProject.name = "simple-debug-stick"
+
+// The server plugin is a separate Gradle build (its own settings), kept out of the
+// Stonecutter version grid. Included here only so the IDE lists its tasks (e.g.
+// runServer); it is NOT wired into the root `build`. CI builds it via `-p plugin`.
+includeBuild("plugin")

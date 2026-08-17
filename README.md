@@ -123,6 +123,32 @@ nodes (the Gradle daemon is pinned to 25 via `gradle/gradle-daemon-jvm.propertie
 per-version recipe JSON under `src/main/recipes/<era>` is committed, so a plain `build`
 ships the recipe without a datagen step.
 
+## Server plugin (Bukkit/Spigot/Paper/Purpur/Folia)
+
+For servers without a Fabric client mod, a **Bukkit plugin** reproduces the same
+behaviour — one jar for Spigot, Paper, Purpur and Folia (Folia-supported), Minecraft
+**1.16+**. It lives in `plugin/` as a standalone build and reads the same
+`SimpleDebugStick.json` schema, with identical rule precedence.
+
+- **Give the stick:** the same smithing recipe (on 1.20+ servers) or `/simpledebugstick give`.
+- **Edit blocks:** right-click a block to change the selected property, left-click to
+  select the next, sneak to reverse — the same UX as the mod.
+- **Permissions:** `simpledebugstick.use` (default true) gates the filtered behaviour;
+  `simpledebugstick.bypass` (default op) hands a **creative** operator the unrestricted
+  vanilla stick (a survival op is filtered like everyone else); `simpledebugstick.command`
+  (default op) guards `/simpledebugstick`.
+- **Config:** `plugins/SimpleDebugStick/SimpleDebugStick.json`. `/simpledebugstick reload`
+  re-reads it.
+- Because Bukkit exposes block states through typed `BlockData` interfaces rather than a
+  generic property list, the plugin edits a curated set of property types (stairs, slabs,
+  walls, fences, panes, bars, directional, waterlogged, age, powered, open, …) — enough to
+  cover the default config. The Fabric mod, with full mixin access, is unrestricted.
+
+```bash
+./gradlew -p plugin build       # -> plugin/build/libs/simple-debug-stick-plugin-*.jar
+./gradlew -p plugin runServer   # boot a real Paper server with the plugin (-Prun_mc=1.21.8)
+```
+
 ## License
 
 [MIT](LICENSE).

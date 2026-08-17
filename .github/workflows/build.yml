@@ -28,8 +28,14 @@ jobs:
       # Stonecutter: one build task builds every version node; yarn anchors also run
       # their gametests via `check`.
       - run: ./gradlew build --stacktrace
+      # The server plugin is a standalone build (its own settings), not part of the mod
+      # version grid — build + test it separately.
+      - name: Build plugin
+        run: ./gradlew -p plugin build --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: jars
-          path: versions/*/build/libs/*.jar
+          path: |
+            versions/*/build/libs/*.jar
+            plugin/build/libs/*.jar
           if-no-files-found: error
