@@ -1,5 +1,6 @@
 package online.slavok.stick
 
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -16,8 +17,11 @@ import java.util.concurrent.ConcurrentHashMap
  * punch-to-select. Left-clicks are rate-limited per player so holding the button does not
  * spin the property list.
  *
- * Players with `simpledebugstick.bypass` are left to the unrestricted vanilla debug stick;
- * players without `simpledebugstick.use` are ignored entirely.
+ * Mirrors the mod's `isCreativeLevelTwoOp` exemption: only a **creative-mode** holder of
+ * `simpledebugstick.bypass` is left to the unrestricted vanilla debug stick (vanilla only
+ * works in creative anyway). A survival operator still gets the filtered stick — otherwise
+ * the debug stick would do nothing at all for them. Players without `simpledebugstick.use`
+ * are ignored entirely.
  */
 class DebugStickListener(private val handler: DebugStickHandler) : Listener {
 
@@ -35,7 +39,9 @@ class DebugStickListener(private val handler: DebugStickHandler) : Listener {
         }
 
         val player = event.player
-        if (player.hasPermission("simpledebugstick.bypass")) return // vanilla handles it
+        // Only a creative operator keeps the unrestricted vanilla stick; a survival op is
+        // filtered like everyone else (vanilla's debug stick does nothing in survival).
+        if (player.gameMode == GameMode.CREATIVE && player.hasPermission("simpledebugstick.bypass")) return
         if (!player.hasPermission("simpledebugstick.use")) return
 
         // Our handling replaces vanilla's (and stops the left-click from breaking the block).
