@@ -61,24 +61,35 @@ data class StickConfig(
     companion object {
         const val ALL = "all"
 
-        /** Shipped defaults — matches the mod: decorative shapes, never waterlogging. */
+        /**
+         * Shipped defaults — matches the mod. Blacklist mode: everything is editable
+         * except the properties that let a debug stick duplicate items, dupe blocks, or
+         * break progression (fill levels, ages, egg/hatch counts, trial/vault state,
+         * end-portal eyes, waterlogging, ...).
+         */
         fun default(): StickConfig = StickConfig(
-            allowed = Rules(
-                blocks = listOf(
-                    Entry("iron_bars"),
-                    Entry("bamboo", mapOf("leaves" to listOf("none", "large"), "age" to listOf(ALL))),
+            allowed = Rules(emptyList(), emptyMap(), emptyList()),
+            forbidden = Rules(
+                blocks = emptyList(),
+                properties = mapOf(
+                    "honey_level" to listOf(ALL),
+                    "level" to listOf(ALL),
+                    "age" to listOf(ALL),
+                    "bites" to listOf(ALL),
+                    "charges" to listOf(ALL),
+                    "eggs" to listOf(ALL),
+                    "hatch" to listOf(ALL),
+                    "ominous" to listOf(ALL),
+                    "trial_spawner_state" to listOf(ALL),
+                    "vault_state" to listOf(ALL),
+                    "facing" to listOf("end_portal_frame"),
+                    "eye" to listOf(ALL),
+                    "flower_amount" to listOf(ALL),
+                    "waterlogged" to listOf(ALL),
                 ),
-                properties = emptyMap(),
-                tags = listOf(
-                    Entry("stairs"),
-                    Entry("walls"),
-                    Entry("c:glass_panes"),
-                    Entry("fences"),
-                    Entry("slabs", mapOf("type" to listOf("top", "bottom"))),
-                ),
+                tags = emptyList(),
             ),
-            forbidden = Rules(emptyList(), mapOf("waterlogged" to listOf(ALL)), emptyList()),
-            whitelist = true,
+            whitelist = false,
         )
 
         // Gson leaves absent fields null, so parse into a lenient DTO and fill defaults.

@@ -12,7 +12,26 @@ import org.junit.jupiter.api.Test
  */
 class RuleMatcherTest {
 
-    private val defaults = StickConfig.default()
+    // A fixed decorative allow-list fixture, independent of the shipped default() (which
+    // may change) — the same config the mod's RuleMatcher tests use.
+    private val defaults = StickConfig(
+        allowed = StickConfig.Rules(
+            blocks = listOf(
+                StickConfig.Entry("iron_bars"),
+                StickConfig.Entry("bamboo", mapOf("leaves" to listOf("none", "large"), "age" to listOf(ALL))),
+            ),
+            properties = emptyMap(),
+            tags = listOf(
+                StickConfig.Entry("stairs"),
+                StickConfig.Entry("walls"),
+                StickConfig.Entry("c:glass_panes"),
+                StickConfig.Entry("fences"),
+                StickConfig.Entry("slabs", mapOf("type" to listOf("top", "bottom"))),
+            ),
+        ),
+        forbidden = StickConfig.Rules(emptyList(), mapOf("waterlogged" to listOf(ALL)), emptyList()),
+        whitelist = true,
+    )
     private val stairTags = { listOf("minecraft:stairs", "minecraft:wooden_stairs") }
     private val slabTags = { listOf("minecraft:slabs", "minecraft:wooden_slabs") }
     private val noTags = { emptyList<String>() }

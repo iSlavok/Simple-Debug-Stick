@@ -51,7 +51,6 @@ class StickConfigTest {
         val original = StickConfig.default()
         val restored = StickConfig.fromJson(gson, JsonParser.parseString(gson.toJson(original)))
         assertEquals(original, restored)
-        assertFalse(restored.whitelist == false)
     }
 
     @Test
