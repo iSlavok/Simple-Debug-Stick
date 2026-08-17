@@ -13,8 +13,10 @@ players keep the unrestricted vanilla item.
 - 🔨 **Craftable.** Upgrade a plain stick to a debug stick at a **smithing table**:
   netherite upgrade template + stick + netherite ingot (a plain stick + netherite ingot on
   1.18–1.19, which predate smithing templates). Late-game by design, not a day-one tool.
-- 🎛️ **Allow-list by default.** Out of the box only stairs, slabs, walls, fences, glass
-  panes, iron bars and bamboo can be edited — and never `waterlogged`.
+- 🎛️ **Safe blacklist by default.** Out of the box everything is editable *except* the
+  properties that let a debug stick dupe items, dupe blocks or break progression (fill
+  levels, ages, egg/hatch counts, trial/vault state, end-portal eyes, `waterlogged`, …).
+  Switch to an allow-list, or tighten/loosen it, in the config.
 - 🧱 **Rules at three levels.** Per block, per block tag, or per property globally. Deny
   always beats allow at the same level.
 - 🖱️ **Punch to select, right-click to change.** Vanilla ties property selection to
@@ -35,32 +37,29 @@ nothing looks broken to the player.
 
 ## Configuration
 
-Config file: `config/SimpleDebugStick.json`. Run `/reload` after editing.
+Config file: `config/SimpleDebugStick.json`. Run `/reload` after editing. The shipped
+default (below) is blacklist mode — everything editable except the listed properties:
 
 ```json
 {
-	"allowed": {
-		"blocks": [
-			{ "id": "iron_bars" },
-			{ "id": "bamboo", "properties": { "leaves": ["none", "large"], "age": ["all"] } }
-		],
-		"properties": {},
-		"tags": [
-			{ "id": "stairs" },
-			{ "id": "walls" },
-			{ "id": "c:glass_panes" },
-			{ "id": "fences" },
-			{ "id": "slabs", "properties": { "type": ["top", "bottom"] } }
-		]
-	},
+	"allowed": { "blocks": [], "properties": {}, "tags": [] },
 	"forbidden": {
 		"blocks": [],
-		"properties": { "waterlogged": ["all"] },
+		"properties": {
+			"honey_level": ["all"], "level": ["all"], "age": ["all"], "bites": ["all"],
+			"charges": ["all"], "eggs": ["all"], "hatch": ["all"], "ominous": ["all"],
+			"trial_spawner_state": ["all"], "vault_state": ["all"], "eye": ["all"],
+			"flower_amount": ["all"], "waterlogged": ["all"]
+		},
 		"tags": []
 	},
-	"whitelist": true
+	"whitelist": false
 }
 ```
+
+To run an **allow-list** instead (only named blocks editable), set `"whitelist": true` and
+list blocks/tags under `allowed`, e.g. `"tags": [{ "id": "stairs" }, { "id": "slabs",
+"properties": { "type": ["top", "bottom"] } }]`.
 
 **Options:**
 
