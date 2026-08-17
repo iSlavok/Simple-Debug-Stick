@@ -134,8 +134,9 @@ behaviour — one jar for Spigot, Paper, Purpur and Folia (Folia-supported), Min
 - **Edit blocks:** right-click a block to change the selected property, left-click to
   select the next, sneak to reverse — the same UX as the mod.
 - **Permissions:** `simpledebugstick.use` (default true) gates the filtered behaviour;
-  `simpledebugstick.bypass` (default op) falls through to the unrestricted vanilla stick;
-  `simpledebugstick.command` (default op) guards `/simpledebugstick`.
+  `simpledebugstick.bypass` (default op) hands a **creative** operator the unrestricted
+  vanilla stick (a survival op is filtered like everyone else); `simpledebugstick.command`
+  (default op) guards `/simpledebugstick`.
 - **Config:** `plugins/SimpleDebugStick/SimpleDebugStick.json`. `/simpledebugstick reload`
   re-reads it.
 - Because Bukkit exposes block states through typed `BlockData` interfaces rather than a
