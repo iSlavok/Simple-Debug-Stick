@@ -1,5 +1,7 @@
 package online.slavok.stick
 
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TranslatableComponent
 import online.slavok.stick.config.ConfigManager
 import online.slavok.stick.state.StateProperties
 import online.slavok.stick.state.StateProperty
@@ -43,7 +45,7 @@ class DebugStickHandler(private val config: ConfigManager) {
             val value = nextAllowedValue(material, property, inverse) ?: return
             property.set(value)
             block.blockData = data // region-local on Folia: the clicked block is in the caller's region
-            player.sendMessage("[Debug Stick] \"${property.name}\" to $value")
+            actionBar(player, "item.minecraft.debug_stick.update", property.name, value)
         } else {
             val names = properties.map { it.name }
             val current = names.indexOf(perBlock[material])
@@ -54,7 +56,7 @@ class DebugStickHandler(private val config: ConfigManager) {
             }
             val property = properties[next]
             perBlock[material] = property.name
-            player.sendMessage("[Debug Stick] selected \"${property.name}\" (${property.current()})")
+            actionBar(player, "item.minecraft.debug_stick.select", property.name, property.current())
         }
     }
 
@@ -71,6 +73,16 @@ class DebugStickHandler(private val config: ConfigManager) {
     }
 
     private fun deny(player: Player, material: Material) {
-        player.sendMessage("[Debug Stick] ${material.key} has no properties you can edit")
+        actionBar(player, "item.minecraft.debug_stick.empty", material.key.toString())
+    }
+
+    /**
+     * Sends the vanilla debug-stick message to the action bar, using the vanilla
+     * translation keys so the client renders it exactly like the real item (localized,
+     * above the hotbar — no chat spam). This is the plugin's stand-in for the mod's reuse
+     * of the item's own sendMessage, which needs NMS a plugin does not have.
+     */
+    private fun actionBar(player: Player, key: String, vararg args: String) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TranslatableComponent(key, *args))
     }
 }
